@@ -1,4 +1,21 @@
-##Car Auction App (Go + Next.js)
+## 起動方法
+
+```bash
+docker compose up -d --build
+```
+
+- BE:http://localhost:8080
+
+- FE:http://localhost:3000
+
+### 環境
+
+- MYSQL_USER=app
+- MYSQL_PASSWORD=app
+- MYSQL_DATABASE=app
+- MYSQL_ROOT_PASSWORD: root
+
+
 
 ## 使用した主な SQL
 
@@ -16,7 +33,7 @@ WHERE car_id = ?
 ORDER BY created_at DESC;
 ```
 
-### 3. 車両ごとの最高入札額（JOIN + 集計）
+### 3. 車両ごとの最高入札額（結合 + 集計）
 ```sql
 SELECT
   c.id       AS car_id,
@@ -26,6 +43,39 @@ FROM cars c
 LEFT JOIN bids b ON c.id = b.car_id
 GROUP BY c.id, c.model;
 ```
+## EXPLAIN(2本）
+
+<img width="1890" height="1062" alt="スクリーンショット 2025-11-21 003113" src="https://github.com/user-attachments/assets/9245a5c2-eed4-4210-83ff-0bb72f0a9204" />
+
+- `入札一覧取得`
+- `車両ごとの最高入札額`
+
+
+
+## DDL(cars/bids)
+
+```sql
+CREATE TABLE IF NOT EXISTS cars (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  model VARCHAR(64) NOT NULL,
+  price INT NOT NULL,
+  year INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS bids (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  car_id BIGINT NOT NULL,
+  amount INT NOT NULL,
+  bidder VARCHAR(64) NOT NULL,
+  request_id CHAR(36) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_bids_car FOREIGN KEY (car_id) REFERENCES cars(id),
+  UNIQUE KEY uk_request_id (request_id)
+);
+```
+
 
 ## インデックス
 
@@ -36,6 +86,9 @@ GROUP BY c.id, c.model;
   `GET /bids?item_id=` の  
   `WHERE car_id = ? ORDER BY created_at DESC` を高速にするため、  
   `bids(car_id, created_at)` に複合インデックスを付与。
+
+
+
 
 
 
