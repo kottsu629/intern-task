@@ -15,6 +15,21 @@ docker compose up -d --build
 - MYSQL_DATABASE=app
 - MYSQL_ROOT_PASSWORD: root
 
+## テスト実行方法
+
+バックエンド（Go）で 1 本のユニットテストを用意しています。  
+ページネーション用の小さな関数 `calcTotalPages` が正しく動作することを確認しています。
+
+### 実行コマンド
+
+```bash
+cd backend
+go test ./...
+```
+### テスト内容の概要
+- `calcTotalPages` が総件数と1ページあたり件数から正しいページ数を計算できることを確認
+- 端数切り上げのケース、0件の場合、1ページあたり件数が0以下の場合など複数パターンをチェック
+
 
 
 ## 使用した主な SQL
@@ -47,8 +62,8 @@ GROUP BY c.id, c.model;
 
 <img width="1890" height="1062" alt="スクリーンショット 2025-11-21 003113" src="https://github.com/user-attachments/assets/9245a5c2-eed4-4210-83ff-0bb72f0a9204" />
 
-- `入札一覧取得`
-- `車両ごとの最高入札額`
+- `入札一覧取得（上）`
+- `車両ごとの最高入札額（下）`
 
 
 
