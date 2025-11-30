@@ -102,6 +102,11 @@ CREATE TABLE IF NOT EXISTS bids (
   `WHERE car_id = ? ORDER BY created_at DESC` を高速にするため、  
   `bids(car_id, created_at)` に複合インデックスを付与。
 
+## SSR / CSR の選択
+
+Client Side Rendering（CSR）を採用。
+車両一覧・詳細は SEO を特に必要としておらず、価格フィルタやページネーションなどクライアント側での状態更新が中心のため、API(Go) と連携するシンプルな SPA 構成にすることで実装・デバッグコストを下げた。
+
 
 
 
